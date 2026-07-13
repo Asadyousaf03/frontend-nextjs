@@ -1,10 +1,10 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
-import AgentConsole from "@/components/AgentConsole";
+import { FormEvent, useState } from "react";
 import HackNationHeader from "@/components/HackNationHeader";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 import ResponseCard from "@/components/ResponseCard";
-import { analyzeQuery, streamAgentLogs } from "@/lib/api";
+import { analyzeQuery } from "@/lib/api";
 import type { AnalyzeResponse, RequestState } from "@/types/analyze";
 
 export default function HomePage() {
@@ -12,15 +12,6 @@ export default function HomePage() {
   const [state, setState] = useState<RequestState>("idle");
   const [response, setResponse] = useState<AnalyzeResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [logs, setLogs] = useState<string[]>([]);
-  const [isStreaming, setIsStreaming] = useState(false);
-  const abortRef = useRef<AbortController | null>(null);
-
-  useEffect(() => {
-    return () => {
-      abortRef.current?.abort();
-    };
-  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,38 +19,15 @@ export default function HomePage() {
     const trimmed = query.trim();
     if (!trimmed) return;
 
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
     setState("loading");
     setError(null);
     setResponse(null);
-    setLogs([]);
-    setIsStreaming(true);
-
-    const logTask = streamAgentLogs(
-      (line) => setLogs((prev) => [...prev, line]),
-      controller.signal,
-    )
-      .catch(() => {
-        if (!controller.signal.aborted) {
-          setLogs((prev) => [
-            ...prev,
-            "⚠️ Log stream interrupted — analysis may still complete.",
-          ]);
-        }
-      })
-      .finally(() => setIsStreaming(false));
 
     try {
-      const [data] = await Promise.all([analyzeQuery(trimmed), logTask]);
+      const data = await analyzeQuery(trimmed);
       setResponse(data);
       setState("success");
     } catch (err) {
-      controller.abort();
-      setIsStreaming(false);
-
       const message =
         err instanceof Error ? err.message : "Unknown error occurred";
       setError(
@@ -76,10 +44,6 @@ export default function HomePage() {
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950" />
 
       <HackNationHeader />
-
-      <div className="mb-8">
-        <AgentConsole logs={logs} isStreaming={isStreaming} />
-      </div>
 
       <form onSubmit={handleSubmit} className="mb-8 space-y-4">
         <div>
@@ -110,6 +74,8 @@ export default function HomePage() {
             : "Launch Autonomous Analysis"}
         </button>
       </form>
+
+      {state === "loading" && <LoadingSkeleton />}
 
       {state === "error" && error && (
         <div className="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">

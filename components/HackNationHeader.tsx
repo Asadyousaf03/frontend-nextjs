@@ -17,11 +17,6 @@ export default function HackNationHeader() {
       <h1 className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-violet-400 bg-clip-text text-5xl font-black tracking-tight text-transparent sm:text-6xl">
         Hack Nation AI
       </h1>
-
-      <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-slate-400">
-        Autonomous clinical intelligence — orchestrate agents, stream live
-        execution logs, and deliver actionable insights in real time.
-      </p>
     </header>
   );
 }
