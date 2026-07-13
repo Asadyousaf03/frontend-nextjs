@@ -1,41 +1,50 @@
 # AI Hackathon — Frontend
 
-Next.js dashboard that submits analysis queries to the FastAPI backend and displays the mock agent response.
+Next.js dashboard with a built-in mock API route. Deploy everything to Vercel with no separate backend host or credit card.
 
 ## Prerequisites
 
 - Node.js 18.18 or newer
 - npm (included with Node.js)
-- The [backend service](../backend-fastapi) running on port 8000
 
 ## Clone and setup
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Asadyousaf03/frontend-nextjs.git
 cd frontend-nextjs
 npm install
 ```
 
-## Run the dev server
+## Run locally
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000). The app calls the built-in API at `/api/analyze` — no separate backend required.
 
-Make sure the backend is running first:
+To use the [FastAPI backend](../backend-fastapi) locally instead, run it on port 8000 and set:
 
 ```bash
-# In the backend-fastapi directory, with .venv activated
-uvicorn main:app --reload --port 8000
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 ## Usage
 
 1. Enter a query in the text input.
 2. Click **Run Analysis**.
-3. The app calls `POST http://localhost:8000/api/analyze` and renders the response in a card showing status, summary, recommended actions, and confidence score.
+3. The response card shows status, summary, recommended actions, and confidence score.
+
+## Deploy to Vercel (recommended)
+
+1. Go to [vercel.com](https://vercel.com) and sign in with GitHub.
+2. Click **Add New Project** → import `Asadyousaf03/frontend-nextjs`.
+3. Leave all settings as default. No environment variables needed.
+4. Click **Deploy**.
+
+Your app and API are live on one URL, e.g. `https://frontend-nextjs.vercel.app`.
+
+Vercel Hobby is free and does not require a credit card.
 
 ## Scripts
 
@@ -51,46 +60,26 @@ uvicorn main:app --reload --port 8000
 ```
 frontend-nextjs/
 ├── app/
-│   ├── layout.tsx    # Root layout and global styles
-│   ├── page.tsx      # Main analysis page
-│   └── globals.css   # Tailwind directives
+│   ├── api/analyze/route.ts  # Mock API (used in production)
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
 ├── components/
 │   ├── LoadingSkeleton.tsx
 │   └── ResponseCard.tsx
 ├── lib/
-│   └── api.ts        # Typed fetch to the backend
+│   └── api.ts
 ├── types/
-│   └── analyze.ts    # Shared TypeScript types
+│   └── analyze.ts
 └── package.json
 ```
 
-## Deploy to Vercel
+## Optional: external FastAPI backend
 
-1. Go to [vercel.com](https://vercel.com) and import the `Asadyousaf03/frontend-nextjs` repository.
-2. Framework preset: **Next.js** (auto-detected).
-3. Add an environment variable:
+When you have a hosted FastAPI instance (Render, Railway, etc.), set this in Vercel:
 
 ```
-NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
+NEXT_PUBLIC_API_URL=https://your-backend-url.com
 ```
 
-Replace with your live Render backend URL (no trailing slash).
-
-4. Deploy. Vercel will rebuild on every push to `main`.
-
-After deploying, add your Vercel URL to the backend `CORS_ORIGINS` on Render:
-
-```
-CORS_ORIGINS=http://localhost:3000,https://your-app.vercel.app
-```
-
-## Configuration
-
-The backend URL is read from the environment in `lib/api.ts`:
-
-```ts
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-```
-
-Locally, it defaults to `http://localhost:8000`. In production, set `NEXT_PUBLIC_API_URL` in Vercel.
+Without it, the app uses the built-in `/api/analyze` route on Vercel.
