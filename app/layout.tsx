@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Hackathon",
-  description: "AI agent analysis dashboard",
+  title: "Hack Nation AI",
+  description: "Autonomous clinical intelligence platform with live agent orchestration",
 };
 
 export default function RootLayout({

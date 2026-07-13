@@ -1,9 +1,10 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import AgentConsole from "@/components/AgentConsole";
+import HackNationHeader from "@/components/HackNationHeader";
 import ResponseCard from "@/components/ResponseCard";
-import { analyzeQuery } from "@/lib/api";
+import { analyzeQuery, streamAgentLogs } from "@/lib/api";
 import type { AnalyzeResponse, RequestState } from "@/types/analyze";
 
 export default function HomePage() {
@@ -11,6 +12,15 @@ export default function HomePage() {
   const [state, setState] = useState<RequestState>("idle");
   const [response, setResponse] = useState<AnalyzeResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [logs, setLogs] = useState<string[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -18,15 +28,38 @@ export default function HomePage() {
     const trimmed = query.trim();
     if (!trimmed) return;
 
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setState("loading");
     setError(null);
     setResponse(null);
+    setLogs([]);
+    setIsStreaming(true);
+
+    const logTask = streamAgentLogs(
+      (line) => setLogs((prev) => [...prev, line]),
+      controller.signal,
+    )
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setLogs((prev) => [
+            ...prev,
+            "⚠️ Log stream interrupted — analysis may still complete.",
+          ]);
+        }
+      })
+      .finally(() => setIsStreaming(false));
 
     try {
-      const data = await analyzeQuery(trimmed);
+      const [data] = await Promise.all([analyzeQuery(trimmed), logTask]);
       setResponse(data);
       setState("success");
     } catch (err) {
+      controller.abort();
+      setIsStreaming(false);
+
       const message =
         err instanceof Error ? err.message : "Unknown error occurred";
       setError(
@@ -39,14 +72,13 @@ export default function HomePage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-16">
-      <div className="mb-10 text-center">
-        <h1 className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent">
-          AI Agent Console
-        </h1>
-        <p className="mt-3 text-slate-400">
-          Submit a query to receive a mock agent analysis response.
-        </p>
+    <main className="relative mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950" />
+
+      <HackNationHeader />
+
+      <div className="mb-8">
+        <AgentConsole logs={logs} isStreaming={isStreaming} />
       </div>
 
       <form onSubmit={handleSubmit} className="mb-8 space-y-4">
@@ -55,32 +87,32 @@ export default function HomePage() {
             htmlFor="query"
             className="mb-2 block text-sm font-medium text-slate-300"
           >
-            Analysis query
+            Mission brief
           </label>
           <input
             id="query"
             type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Enter a patient case or clinical question..."
+            placeholder="Describe the clinical scenario for agent analysis..."
             disabled={state === "loading"}
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none backdrop-blur transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
 
         <button
           type="submit"
           disabled={state === "loading" || !query.trim()}
-          className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-900/30 transition hover:from-indigo-500 hover:to-violet-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-xl bg-gradient-to-r from-emerald-600 to-cyan-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/30 transition hover:from-emerald-500 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {state === "loading" ? "Analyzing..." : "Run Analysis"}
+          {state === "loading"
+            ? "Agent executing mission..."
+            : "Launch Autonomous Analysis"}
         </button>
       </form>
 
-      {state === "loading" && <LoadingSkeleton />}
-
       {state === "error" && error && (
-        <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
+        <div className="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
           {error}
         </div>
       )}
