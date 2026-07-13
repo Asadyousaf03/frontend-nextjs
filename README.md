@@ -1,12 +1,12 @@
 # AI Hackathon — Frontend
 
-Next.js dashboard that calls the FastAPI backend as a separate deployed service.
+Next.js dashboard on Vercel, calling the FastAPI backend on Render.
 
 ## Prerequisites
 
 - Node.js 18.18+
 - npm
-- Backend running locally or deployed on Vercel
+- Backend on Render (or running locally on port 8000)
 
 ## Local development
 
@@ -25,39 +25,38 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The app calls `http://localhost:8000/api/analyze` by default.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Deploy to Vercel
+## Deploy
 
-Deploy as a **separate Vercel project** from the backend.
+### Step 1 — Backend on Render
 
-### Step 1 — Deploy backend first
+Deploy `backend-fastapi` on Render first. See the [backend README](https://github.com/Asadyousaf03/backend-fastapi#deploy-to-render).
 
-Import `Asadyousaf03/backend-fastapi` at [vercel.com/new](https://vercel.com/new).  
-Copy the URL, e.g. `https://backend-fastapi.vercel.app`.
+Copy your Render URL, e.g. `https://backend-fastapi.onrender.com`.
 
-### Step 2 — Deploy frontend
+### Step 2 — Frontend on Vercel
 
-1. Import `Asadyousaf03/frontend-nextjs` at [vercel.com/new](https://vercel.com/new).
+1. Go to [vercel.com/new](https://vercel.com/new) and import `Asadyousaf03/frontend-nextjs`.
 2. Add environment variable:
 
 ```
-NEXT_PUBLIC_API_URL=https://backend-fastapi.vercel.app
+NEXT_PUBLIC_API_URL=https://backend-fastapi.onrender.com
 ```
 
-Use your actual backend URL, no trailing slash.
+Use your actual Render URL, no trailing slash.
 
-3. Deploy.
+3. Deploy and copy your Vercel URL.
 
-### Step 3 — Update backend CORS
+### Step 3 — CORS on Render
 
-In the **backend** Vercel project → Settings → Environment Variables:
+In Render → your backend service → **Environment**:
 
 ```
 CORS_ORIGINS=http://localhost:3000,https://your-frontend.vercel.app
 ```
 
-Redeploy the backend after saving.
+Save and redeploy the backend.
 
 ## Scripts
 
@@ -67,21 +66,6 @@ Redeploy the backend after saving.
 | `npm run build` | Production build         |
 | `npm run start` | Run production server    |
 
-## Project structure
-
-```
-frontend-nextjs/
-├── app/
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
-├── components/
-│   ├── LoadingSkeleton.tsx
-│   └── ResponseCard.tsx
-├── lib/api.ts          # Calls external FastAPI backend
-└── types/analyze.ts
-```
-
 ## Configuration
 
 ```ts
@@ -89,4 +73,7 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 ```
 
-Set `NEXT_PUBLIC_API_URL` in Vercel for production. Locally it defaults to port 8000.
+| Environment | `NEXT_PUBLIC_API_URL` |
+|---|---|
+| Local | not set (defaults to `localhost:8000`) |
+| Production | `https://your-service.onrender.com` |
