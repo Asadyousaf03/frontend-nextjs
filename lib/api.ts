@@ -13,7 +13,10 @@ export async function analyzeQuery(query: string): Promise<AnalyzeResponse> {
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    const detail = await response.text();
+    throw new Error(
+      detail || `Request failed with status ${response.status}`,
+    );
   }
 
   return response.json() as Promise<AnalyzeResponse>;

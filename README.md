@@ -25,7 +25,23 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) (use `localhost`, not `127.0.0.1`).
+
+### Port 8000 already in use?
+
+Another app may be bound to port 8000. Start the backend on 8001 instead:
+
+```bash
+uvicorn main:app --reload --port 8001
+```
+
+Create `.env.local` in the frontend repo:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:8001
+```
+
+Restart `npm run dev` after changing env vars.
 
 ## Deploy
 

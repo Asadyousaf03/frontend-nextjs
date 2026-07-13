@@ -26,8 +26,14 @@ export default function HomePage() {
       const data = await analyzeQuery(trimmed);
       setResponse(data);
       setState("success");
-    } catch {
-      setError("Unable to reach the analysis service. Is the backend running?");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Unknown error occurred";
+      setError(
+        message.includes("Failed to fetch")
+          ? "Unable to reach the analysis service. Check that the backend is running and NEXT_PUBLIC_API_URL is correct."
+          : message,
+      );
       setState("error");
     }
   }
