@@ -1,15 +1,10 @@
 import type { AnalyzeResponse } from "@/types/analyze";
 
-function getAnalyzeEndpoint(): string {
-  const externalApi = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
-  if (externalApi) {
-    return `${externalApi}/api/analyze`;
-  }
-  return "/api/analyze";
-}
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export async function analyzeQuery(query: string): Promise<AnalyzeResponse> {
-  const response = await fetch(getAnalyzeEndpoint(), {
+  const response = await fetch(`${API_BASE_URL}/api/analyze`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
