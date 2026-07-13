@@ -1,6 +1,7 @@
 import type { AnalyzeResponse } from "@/types/analyze";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export async function analyzeQuery(query: string): Promise<AnalyzeResponse> {
   const response = await fetch(`${API_BASE_URL}/api/analyze`, {

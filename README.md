@@ -64,12 +64,33 @@ frontend-nextjs/
 └── package.json
 ```
 
-## Configuration
+## Deploy to Vercel
 
-The backend URL is set in `lib/api.ts`:
+1. Go to [vercel.com](https://vercel.com) and import the `Asadyousaf03/frontend-nextjs` repository.
+2. Framework preset: **Next.js** (auto-detected).
+3. Add an environment variable:
 
-```ts
-const API_BASE_URL = "http://localhost:8000";
+```
+NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
 ```
 
-Update this value if the API runs on a different host or port.
+Replace with your live Render backend URL (no trailing slash).
+
+4. Deploy. Vercel will rebuild on every push to `main`.
+
+After deploying, add your Vercel URL to the backend `CORS_ORIGINS` on Render:
+
+```
+CORS_ORIGINS=http://localhost:3000,https://your-app.vercel.app
+```
+
+## Configuration
+
+The backend URL is read from the environment in `lib/api.ts`:
+
+```ts
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+```
+
+Locally, it defaults to `http://localhost:8000`. In production, set `NEXT_PUBLIC_API_URL` in Vercel.
