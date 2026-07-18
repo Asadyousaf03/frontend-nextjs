@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Hack Nation AI",
-  description: "Autonomous clinical intelligence platform with live agent orchestration",
+  title: "Hack Nation AI · Genomic AST",
+  description:
+    "E. coli ciprofloxacin genomic antimicrobial susceptibility testing dashboard",
 };
 
 export default function RootLayout({
