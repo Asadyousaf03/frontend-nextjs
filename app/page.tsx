@@ -95,7 +95,6 @@ export default function HomePage() {
         controller.signal,
       );
 
-      // Status polling safety net if EventSource is blocked.
       const poll = window.setInterval(async () => {
         try {
           const status = await getAnalysisStatus(created.analysis_id);
@@ -134,17 +133,15 @@ export default function HomePage() {
   const busy = uiState === "uploading" || uiState === "running";
 
   return (
-    <main className="relative mx-auto min-h-screen max-w-5xl px-6 py-12">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950" />
-
+    <main className="relative mx-auto min-h-screen max-w-6xl px-5 py-10 sm:px-6 lg:py-12">
       <HackNationHeader />
 
-      <div className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+      <div className="mb-6 rounded-xl border border-atu/30 bg-atu-soft/70 px-4 py-3 text-sm leading-relaxed text-atu">
         E. coli · ciprofloxacin genomic AST MVP · research use only · not for
         clinical decision-making
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <UploadPanel
           sampleName={sampleName}
           setSampleName={setSampleName}
@@ -164,13 +161,14 @@ export default function HomePage() {
       </div>
 
       {analysisId && (
-        <p className="mt-4 text-xs text-slate-500">
-          analysis_id: <span className="font-mono text-slate-400">{analysisId}</span>
+        <p className="mt-4 font-mono text-xs text-muted">
+          analysis_id:{" "}
+          <span className="text-foreground/80">{analysisId}</span>
         </p>
       )}
 
       {uiState === "error" && error && (
-        <div className="mt-6 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
+        <div className="mt-6 rounded-xl border border-res/30 bg-res-soft px-4 py-3 text-sm text-res">
           {error}
         </div>
       )}

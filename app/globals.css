@@ -1,3 +1,112 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --surface: 248 250 252;
+  --surface-2: 255 255 255;
+  --foreground: 15 23 42;
+  --muted: 100 116 139;
+  --border: 203 213 225;
+  --accent: 16 185 129;
+  --accent-soft: 209 250 229;
+  --res: 225 29 72;
+  --res-soft: 255 228 230;
+  --sus: 5 150 105;
+  --sus-soft: 209 250 229;
+  --atu: 217 119 6;
+  --atu-soft: 254 243 199;
+  --base-a: 239 68 68;
+  --base-t: 59 130 246;
+  --base-c: 234 179 8;
+  --base-g: 16 185 129;
+  --backdrop-from: 236 253 245;
+  --backdrop-via: 248 250 252;
+  --backdrop-to: 241 245 249;
+}
+
+.dark {
+  --surface: 2 6 23;
+  --surface-2: 15 23 42;
+  --foreground: 241 245 249;
+  --muted: 148 163 184;
+  --border: 30 41 59;
+  --accent: 52 211 153;
+  --accent-soft: 6 78 59;
+  --res: 251 113 133;
+  --res-soft: 76 5 25;
+  --sus: 52 211 153;
+  --sus-soft: 6 78 59;
+  --atu: 251 191 36;
+  --atu-soft: 69 26 3;
+  --base-a: 248 113 113;
+  --base-t: 96 165 250;
+  --base-c: 250 204 21;
+  --base-g: 52 211 153;
+  --backdrop-from: 6 78 59;
+  --backdrop-via: 2 6 23;
+  --backdrop-to: 2 6 23;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    color: rgb(var(--foreground));
+    background-color: rgb(var(--surface));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image:
+      radial-gradient(
+        ellipse 80% 50% at 50% -10%,
+        rgb(var(--backdrop-from) / 0.55),
+        transparent 55%
+      ),
+      linear-gradient(
+        to bottom,
+        rgb(var(--backdrop-via)),
+        rgb(var(--backdrop-to))
+      ),
+      linear-gradient(rgb(var(--border) / 0.35) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--border) / 0.35) 1px, transparent 1px);
+    background-size:
+      auto,
+      auto,
+      40px 40px,
+      40px 40px;
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.35);
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--border)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgb(var(--border));
+    border-radius: 9999px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-helix-spin,
+    .animate-float,
+    .animate-ping,
+    .animate-fade-in {
+      animation: none !important;
+    }
+  }
+}
