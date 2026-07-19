@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Hack Nation Genomic AST API",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "paths": {
     "/api/v1/uploads": {
@@ -155,6 +155,156 @@
         }
       }
     },
+    "/api/v2/uploads": {
+      "post": {
+        "tags": [
+          "uploads-v2"
+        ],
+        "summary": "Create Upload",
+        "operationId": "create_upload_api_v2_uploads_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/uploads/{upload_id}/content": {
+      "put": {
+        "tags": [
+          "uploads-v2"
+        ],
+        "summary": "Put Upload Content",
+        "operationId": "put_upload_content_api_v2_uploads__upload_id__content_put",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Upload Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_put_upload_content_api_v2_uploads__upload_id__content_put"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/uploads/{upload_id}": {
+      "get": {
+        "tags": [
+          "uploads-v2"
+        ],
+        "summary": "Get Upload",
+        "operationId": "get_upload_api_v2_uploads__upload_id__get",
+        "parameters": [
+          {
+            "name": "upload_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Upload Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Upload Api V2 Uploads  Upload Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/analyses": {
       "post": {
         "tags": [
@@ -265,6 +415,7 @@
           "analyses"
         ],
         "summary": "Get Analysis Result",
+        "description": "Return v2 when available; otherwise parse legacy v1.",
         "operationId": "get_analysis_result_api_v1_analyses__analysis_id__result_get",
         "parameters": [
           {
@@ -284,7 +435,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AnalysisResult"
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Analysis Result Api V1 Analyses  Analysis Id  Result Get"
                 }
               }
             }
@@ -363,6 +516,214 @@
         }
       }
     },
+    "/api/v2/analyses": {
+      "post": {
+        "tags": [
+          "analyses-v2"
+        ],
+        "summary": "Create Analysis V2",
+        "operationId": "create_analysis_v2_api_v2_analyses_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAnalysisResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/analyses/{analysis_id}": {
+      "get": {
+        "tags": [
+          "analyses-v2"
+        ],
+        "summary": "Get Analysis Status",
+        "operationId": "get_analysis_status_api_v2_analyses__analysis_id__get",
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisStatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/analyses/{analysis_id}/result": {
+      "get": {
+        "tags": [
+          "analyses-v2"
+        ],
+        "summary": "Get Analysis Result V2",
+        "operationId": "get_analysis_result_v2_api_v2_analyses__analysis_id__result_get",
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisResultV2"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/analyses/{analysis_id}/events": {
+      "get": {
+        "tags": [
+          "analyses-v2"
+        ],
+        "summary": "Stream Analysis Events",
+        "operationId": "stream_analysis_events_api_v2_analyses__analysis_id__events_get",
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -378,6 +739,62 @@
                   },
                   "type": "object",
                   "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "summary": "Ready",
+        "operationId": "ready_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Ready Ready Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/capabilities": {
+      "get": {
+        "summary": "Capabilities",
+        "operationId": "capabilities_api_v2_capabilities_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiCapabilitiesV2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/capabilities": {
+      "get": {
+        "summary": "Capabilities",
+        "operationId": "capabilities_api_v1_capabilities_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiCapabilitiesV2"
                 }
               }
             }
@@ -461,8 +878,60 @@
         ],
         "title": "AlternativeDrug"
       },
-      "AnalysisResult": {
+      "AnalysisProvenance": {
         "properties": {
+          "schema_version": {
+            "type": "string",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "pipeline_version": {
+            "type": "string",
+            "title": "Pipeline Version"
+          },
+          "compute_backend": {
+            "type": "string",
+            "title": "Compute Backend"
+          },
+          "image_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Digest"
+          },
+          "tool_execution_mode": {
+            "type": "string",
+            "title": "Tool Execution Mode"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pipeline_version",
+          "compute_backend",
+          "tool_execution_mode"
+        ],
+        "title": "AnalysisProvenance"
+      },
+      "AnalysisResultV2": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
           "analysis_id": {
             "type": "string",
             "format": "uuid",
@@ -483,11 +952,53 @@
           "sample": {
             "$ref": "#/components/schemas/SampleMetadata"
           },
+          "organism": {
+            "$ref": "#/components/schemas/OrganismSelection"
+          },
           "qc": {
             "$ref": "#/components/schemas/QCReport"
           },
+          "antibiogram": {
+            "items": {
+              "$ref": "#/components/schemas/AntimicrobialCall"
+            },
+            "type": "array",
+            "title": "Antibiogram"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/ResistanceEvidence"
+            },
+            "type": "array",
+            "title": "Evidence"
+          },
+          "tool_runs": {
+            "items": {
+              "$ref": "#/components/schemas/ToolRun"
+            },
+            "type": "array",
+            "title": "Tool Runs"
+          },
+          "interpretation": {
+            "$ref": "#/components/schemas/ClinicalInterpretation"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/AnalysisProvenance"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Completed At"
+          },
           "susceptibility": {
-            "$ref": "#/components/schemas/SusceptibilityCall"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SusceptibilityCall"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "variants": {
             "items": {
@@ -503,20 +1014,12 @@
             "type": "array",
             "title": "Shap Features"
           },
-          "interpretation": {
-            "$ref": "#/components/schemas/ClinicalInterpretation"
-          },
           "pipeline_versions": {
             "additionalProperties": {
               "type": "string"
             },
             "type": "object",
             "title": "Pipeline Versions"
-          },
-          "completed_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Completed At"
           }
         },
         "type": "object",
@@ -524,15 +1027,16 @@
           "analysis_id",
           "status",
           "sample",
+          "organism",
           "qc",
-          "susceptibility",
-          "variants",
-          "shap_features",
+          "antibiogram",
+          "evidence",
+          "tool_runs",
           "interpretation",
-          "pipeline_versions",
+          "provenance",
           "completed_at"
         ],
-        "title": "AnalysisResult"
+        "title": "AnalysisResultV2"
       },
       "AnalysisStatusResponse": {
         "properties": {
@@ -650,6 +1154,217 @@
         ],
         "title": "AnalyzeResponse"
       },
+      "AntimicrobialCall": {
+        "properties": {
+          "drug_id": {
+            "type": "string",
+            "title": "Drug Id"
+          },
+          "drug": {
+            "type": "string",
+            "title": "Drug"
+          },
+          "drug_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Drug Class"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "R",
+                  "S",
+                  "I",
+                  "ATU",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "call_status": {
+            "type": "string",
+            "enum": [
+              "called",
+              "unknown",
+              "unsupported",
+              "conflicting",
+              "insufficient_evidence",
+              "tool_failed"
+            ],
+            "title": "Call Status"
+          },
+          "agreement": {
+            "type": "string",
+            "enum": [
+              "concordant",
+              "complementary",
+              "discordant",
+              "single_source",
+              "no_resistance_evidence",
+              "not_assessed",
+              "tool_failure"
+            ],
+            "title": "Agreement"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Evidence Ids"
+          },
+          "source_assessments": {
+            "items": {
+              "$ref": "#/components/schemas/SourceAssessment"
+            },
+            "type": "array",
+            "title": "Source Assessments"
+          },
+          "confidence_category": {
+            "type": "string",
+            "enum": [
+              "high",
+              "moderate",
+              "low",
+              "none"
+            ],
+            "title": "Confidence Category",
+            "default": "none"
+          },
+          "breakpoint_standard": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Breakpoint Standard"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "drug_id",
+          "drug",
+          "call_status",
+          "agreement"
+        ],
+        "title": "AntimicrobialCall"
+      },
+      "ApiCapabilitiesV2": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "tools-required",
+              "fixture"
+            ],
+            "title": "Mode"
+          },
+          "supported_file_formats": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "fasta",
+                "fastq"
+              ]
+            },
+            "type": "array",
+            "title": "Supported File Formats"
+          },
+          "max_upload_bytes": {
+            "type": "integer",
+            "title": "Max Upload Bytes"
+          },
+          "compute_backend": {
+            "type": "string",
+            "title": "Compute Backend"
+          },
+          "storage_backend": {
+            "type": "string",
+            "title": "Storage Backend"
+          },
+          "require_real_tools": {
+            "type": "boolean",
+            "title": "Require Real Tools"
+          },
+          "tools_ready": {
+            "type": "boolean",
+            "title": "Tools Ready"
+          },
+          "species": {
+            "items": {
+              "$ref": "#/components/schemas/SpeciesCapability"
+            },
+            "type": "array",
+            "title": "Species"
+          },
+          "pinned": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Pinned"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notes"
+          },
+          "readiness": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Readiness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode",
+          "supported_file_formats",
+          "max_upload_bytes",
+          "compute_backend",
+          "storage_backend",
+          "require_real_tools",
+          "tools_ready",
+          "species",
+          "pinned"
+        ],
+        "title": "ApiCapabilitiesV2"
+      },
       "Body_put_upload_content_api_v1_uploads__upload_id__content_put": {
         "properties": {
           "file": {
@@ -663,6 +1378,20 @@
           "file"
         ],
         "title": "Body_put_upload_content_api_v1_uploads__upload_id__content_put"
+      },
+      "Body_put_upload_content_api_v2_uploads__upload_id__content_put": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_put_upload_content_api_v2_uploads__upload_id__content_put"
       },
       "ClinicalInterpretation": {
         "properties": {
@@ -701,8 +1430,7 @@
         "required": [
           "summary",
           "key_drivers",
-          "limitations",
-          "alternative_drugs"
+          "limitations"
         ],
         "title": "ClinicalInterpretation"
       },
@@ -820,6 +1548,72 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "OrganismSelection": {
+        "properties": {
+          "organism_id": {
+            "type": "string",
+            "title": "Organism Id"
+          },
+          "scientific_name": {
+            "type": "string",
+            "title": "Scientific Name"
+          },
+          "requested_name": {
+            "type": "string",
+            "title": "Requested Name"
+          },
+          "match_status": {
+            "type": "string",
+            "enum": [
+              "selected",
+              "unsupported",
+              "missing"
+            ],
+            "title": "Match Status",
+            "default": "selected"
+          },
+          "resfinder_species": {
+            "type": "string",
+            "title": "Resfinder Species"
+          },
+          "amrfinder_organism": {
+            "type": "string",
+            "title": "Amrfinder Organism"
+          },
+          "point_mutations": {
+            "type": "boolean",
+            "title": "Point Mutations",
+            "default": true
+          },
+          "drug_panel": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Drug Panel"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "organism_id",
+          "scientific_name",
+          "requested_name",
+          "resfinder_species",
+          "amrfinder_organism"
+        ],
+        "title": "OrganismSelection"
+      },
       "QCReport": {
         "properties": {
           "passed": {
@@ -920,6 +1714,198 @@
         ],
         "title": "QCReport"
       },
+      "ResistanceEvidence": {
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "title": "Evidence Id"
+          },
+          "gene": {
+            "type": "string",
+            "title": "Gene"
+          },
+          "mutation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mutation"
+          },
+          "identity": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Identity"
+          },
+          "coverage": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coverage"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "ml",
+              "heuristic",
+              "amrfinderplus",
+              "resfinder",
+              "pointfinder",
+              "reconciled"
+            ],
+            "title": "Source"
+          },
+          "associated_drugs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Associated Drugs"
+          },
+          "drug_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Drug Class"
+          },
+          "subclass": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subclass"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "contig": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contig"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "strand": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strand"
+          },
+          "accession": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accession"
+          },
+          "associated_phenotype": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "R",
+                  "S",
+                  "I",
+                  "ATU",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Associated Phenotype"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "evidence_id",
+          "gene",
+          "source"
+        ],
+        "title": "ResistanceEvidence"
+      },
       "SampleMetadata": {
         "properties": {
           "sample_name": {
@@ -931,7 +1917,7 @@
           "organism": {
             "type": "string",
             "title": "Organism",
-            "default": "Escherichia coli"
+            "description": "Expected organism scientific name or organism_id from capabilities."
           },
           "platform": {
             "anyOf": [
@@ -977,6 +1963,7 @@
         "type": "object",
         "required": [
           "sample_name",
+          "organism",
           "file_format"
         ],
         "title": "SampleMetadata"
@@ -1014,6 +2001,129 @@
           "rank"
         ],
         "title": "ShapFeature"
+      },
+      "SourceAssessment": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "ml",
+              "heuristic",
+              "amrfinderplus",
+              "resfinder",
+              "pointfinder",
+              "reconciled"
+            ],
+            "title": "Source"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "resistance_evidence",
+              "no_reportable_evidence",
+              "not_assessed",
+              "tool_unavailable",
+              "tool_failed"
+            ],
+            "title": "Status"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "R",
+                  "S",
+                  "I",
+                  "ATU",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Evidence Ids"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source",
+          "status"
+        ],
+        "title": "SourceAssessment"
+      },
+      "SpeciesCapability": {
+        "properties": {
+          "organism_id": {
+            "type": "string",
+            "title": "Organism Id"
+          },
+          "scientific_name": {
+            "type": "string",
+            "title": "Scientific Name"
+          },
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Aliases"
+          },
+          "resfinder_species": {
+            "type": "string",
+            "title": "Resfinder Species"
+          },
+          "amrfinder_organism": {
+            "type": "string",
+            "title": "Amrfinder Organism"
+          },
+          "point_mutations": {
+            "type": "boolean",
+            "title": "Point Mutations"
+          },
+          "drug_panel": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Drug Panel"
+          },
+          "notes": {
+            "type": "string",
+            "title": "Notes",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "organism_id",
+          "scientific_name",
+          "aliases",
+          "resfinder_species",
+          "amrfinder_organism",
+          "point_mutations",
+          "drug_panel"
+        ],
+        "title": "SpeciesCapability"
       },
       "SusceptibilityCall": {
         "properties": {
@@ -1056,6 +2166,7 @@
             "type": "string",
             "enum": [
               "ml",
+              "heuristic",
               "amrfinderplus",
               "resfinder",
               "pointfinder",
@@ -1083,6 +2194,152 @@
           "confidence"
         ],
         "title": "SusceptibilityCall"
+      },
+      "ToolRun": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "title": "Tool"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "failed",
+              "unavailable",
+              "skipped"
+            ],
+            "title": "Status"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "database_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Database Version"
+          },
+          "database_commit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Database Commit"
+          },
+          "command": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Command"
+          },
+          "runtime_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runtime Seconds"
+          },
+          "exit_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exit Code"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "stderr_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stderr Summary"
+          },
+          "artifact_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artifact Path"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "disclaimer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disclaimer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "status",
+          "role"
+        ],
+        "title": "ToolRun"
       },
       "UploadRequest": {
         "properties": {
@@ -1226,6 +2483,7 @@
             "type": "string",
             "enum": [
               "ml",
+              "heuristic",
               "amrfinderplus",
               "resfinder",
               "pointfinder",
@@ -1268,7 +2526,8 @@
           "gene",
           "source"
         ],
-        "title": "VariantEvidence"
+        "title": "VariantEvidence",
+        "description": "Legacy v1 evidence item retained for migrated results."
       }
     }
   }

@@ -29,19 +29,18 @@ export default function HackNationHeader() {
             </span>
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
-            Genomic antimicrobial susceptibility predictor for{" "}
-            <span className="font-medium text-foreground">
-              Escherichia coli
-            </span>{" "}
-            ciprofloxacin resistance — ML + mechanistic markers + clinical
-            interpretation.
+            Multi-pathogen genomic antibiogram —{" "}
+            <span className="font-medium text-foreground">ResFinder</span>{" "}
+            phenotype inference with{" "}
+            <span className="font-medium text-foreground">AMRFinderPlus</span>{" "}
+            corroboration across supported bacterial panels.
           </p>
           <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-mono uppercase tracking-wider text-muted">
             <span className="rounded-full border border-border bg-surface-2 px-2.5 py-1">
-              A · T · C · G coded
+              Multi-drug antibiogram
             </span>
             <span className="rounded-full border border-border bg-surface-2 px-2.5 py-1">
-              R / S / ATU palette
+              R / S / ATU / unknown
             </span>
             <span className="rounded-full border border-border bg-surface-2 px-2.5 py-1">
               Research use only

@@ -24,7 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Hack Nation AI · Genomic AST",
   description:
-    "E. coli ciprofloxacin genomic antimicrobial susceptibility testing dashboard",
+    "Multi-pathogen genomic antibiogram dashboard using ResFinder and AMRFinderPlus",
 };
 
 export default function RootLayout({

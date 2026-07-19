@@ -15,6 +15,23 @@ function levelColor(level: AnalysisEvent["level"]): string {
   return "text-muted";
 }
 
+const STAGE_LABELS: Record<string, string> = {
+  queued: "Queued",
+  qc: "Assembly QC",
+  species: "Species panel",
+  resfinder: "ResFinder inference",
+  amrfinderplus: "AMRFinderPlus corroboration",
+  reconcile: "Evidence reconciliation",
+  interpretation: "Report interpretation",
+  completed: "Completed",
+  failed: "Failed",
+};
+
+function stageLabel(stage?: string | null): string {
+  if (!stage) return "Queued";
+  return STAGE_LABELS[stage] ?? stage;
+}
+
 export default function ProgressPanel({
   progress,
   stage,
@@ -31,7 +48,7 @@ export default function ProgressPanel({
           </h2>
           <p className="mt-1 text-xs text-muted">
             Stage:{" "}
-            <span className="font-medium text-accent">{stage ?? "queued"}</span>
+            <span className="font-medium text-accent">{stageLabel(stage)}</span>
           </p>
         </div>
         <span className="rounded-full border border-accent/30 bg-accent-soft/50 px-3 py-1 font-mono text-sm font-semibold text-accent">
@@ -39,14 +56,24 @@ export default function ProgressPanel({
         </span>
       </div>
 
-      <div className="mb-4 h-2.5 overflow-hidden rounded-full bg-surface">
+      <div
+        role="progressbar"
+        aria-label="Analysis progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={percent}
+        className="mb-4 h-2.5 overflow-hidden rounded-full bg-surface"
+      >
         <div
           className="h-full rounded-full bg-gradient-to-r from-accent to-base-t transition-all duration-500"
           style={{ width: `${percent}%` }}
         />
       </div>
 
-      <div className="scrollbar-thin max-h-56 space-y-1.5 overflow-y-auto rounded-xl border border-border bg-surface/70 p-3 font-mono text-xs">
+      <div
+        aria-live="polite"
+        className="scrollbar-thin max-h-56 space-y-1.5 overflow-y-auto rounded-xl border border-border bg-surface/70 p-3 font-mono text-xs"
+      >
         {events.length === 0 ? (
           <p className="text-muted">Waiting for pipeline events…</p>
         ) : (

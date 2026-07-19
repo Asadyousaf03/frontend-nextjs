@@ -30,7 +30,6 @@ import {
   isPipelineDiagram,
   toDiagram,
   type PipelineNode,
-  type PipelineNodeData,
   type PipelineNodeKind,
 } from "@/lib/pipeline-flow";
 
