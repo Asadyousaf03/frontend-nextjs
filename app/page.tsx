@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import HackNationHeader from "@/components/HackNationHeader";
+import PipelineFlowSection from "@/components/PipelineFlowSection";
 import ProgressPanel from "@/components/ProgressPanel";
 import ReportDashboard from "@/components/ReportDashboard";
 import UploadPanel, { buildMetadata } from "@/components/UploadPanel";
@@ -178,6 +179,9 @@ export default function HomePage() {
           <ReportDashboard result={result} />
         </div>
       )}
+
+      <PipelineFlowSection />
     </main>
+
   );
 }

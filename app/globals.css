@@ -110,3 +110,39 @@
     }
   }
 }
+
+@layer components {
+  .pipeline-flow .react-flow__controls {
+    box-shadow: none;
+    gap: 2px;
+  }
+
+  .pipeline-flow .react-flow__controls-button {
+    background: rgb(var(--surface-2));
+    border-bottom: 1px solid rgb(var(--border));
+    color: rgb(var(--foreground));
+    border-radius: 6px;
+  }
+
+  .pipeline-flow .react-flow__controls-button:hover {
+    background: rgb(var(--surface));
+  }
+
+  .pipeline-flow .react-flow__controls-button svg {
+    fill: currentColor;
+  }
+
+  .pipeline-flow .react-flow__minimap {
+    background: rgb(var(--surface-2));
+    border: 1px solid rgb(var(--border));
+    border-radius: 12px;
+  }
+
+  .pipeline-flow .react-flow__edge-text {
+    fill: rgb(var(--muted));
+  }
+
+  .pipeline-flow .react-flow__attribution {
+    background: transparent;
+  }
+}
